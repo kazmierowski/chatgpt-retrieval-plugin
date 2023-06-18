@@ -2,7 +2,6 @@ import uuid
 import json
 import argparse
 import asyncio
-import sys
 
 from loguru import logger
 from models.models import Document, DocumentMetadata
@@ -10,7 +9,6 @@ from datastore.datastore import DataStore
 from datastore.factory import get_datastore
 from services.extract_metadata import extract_metadata_from_document
 from services.pii_detection import screen_text_for_pii
-from datetime import datetime
 
 DOCUMENT_UPSERT_BATCH_SIZE = 50
 
@@ -41,14 +39,8 @@ async def process_jsonl_dump(
             source = item.get("source", None)
             source_id = item.get("source_id", None)
             url = item.get("url", None)
-            created_at = item.get("created_at", datetime.utcnow().strftime('%d-%m-%Y'))
+            created_at = item.get("created_at", None)
             author = item.get("author", None)
-            namespace = item.get("namespace", None)
-            custom_metadata_file = json.loads(item.get("custom_metadata", None))
-            question = item.get("question", None)
-            summary = item.get("summary", None)
-            topic = item.get("topic", None)
-            url_array = item.get("url_array", None)
 
             if not text:
                 logger.info("No document text, skipping...")
@@ -61,10 +53,6 @@ async def process_jsonl_dump(
                 url=url,
                 created_at=created_at,
                 author=author,
-                question=question,
-                summary=summary,
-                topic=topic,
-                url_array=url_array
             )
 
             # update metadata with custom values
@@ -90,12 +78,11 @@ async def process_jsonl_dump(
                 # get a Metadata object from the extracted metadata
                 metadata = DocumentMetadata(**extracted_metadata)
 
-            # create a document object with the id, text, metadata and namespace
+            # create a document object with the id, text and metadata
             document = Document(
                 id=id,
                 text=text,
                 metadata=metadata,
-                namespace=namespace,
             )
             documents.append(document)
         except Exception as e:

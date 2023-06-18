@@ -1,7 +1,7 @@
 from typing import Any, Dict
 import requests
 import os
-from secrets import DATABASE_INTERFACE_BEARER_TOKEN
+from secrets_assistant import DATABASE_INTERFACE_BEARER_TOKEN
 
 SEARCH_TOP_K = 3
 
@@ -31,7 +31,7 @@ def upsert_file(directory: str)
                     + filename)
 
 
-def upsert(id: str, content: str):
+def upsert():
     """
     Upload one piece of text to the database.
     """
@@ -44,8 +44,8 @@ def upsert(id: str, content: str):
 
     data = {
         "documents": [{
-            "id": id,
-            "text": content,
+            "id": 1,
+            "text": "content",
         }]
     }
     response = requests.post(url, json=data, headers=headers, timeout=600)

@@ -9,15 +9,28 @@ def extract_metadata_from_document(text: str) -> Dict[str, str]:
     sources = Source.__members__.keys()
     sources_string = ", ".join(sources)
     # This prompt is just an example, change it to fit your use case
+    # Previous version:
+    # {
+    #         "role": "system",
+    #         "content": f"""
+    #         Given a document from a user, try to extract the following metadata:
+    #         - source: string, one of {sources_string}
+    #         - url: string or don't specify
+    #         - created_at: string or don't specify
+    #         - author: string or don't specify
+
+    #         Respond with a JSON containing the extracted metadata in key value pairs. If you don't find a metadata field, don't specify it.
+    #         """,
+    #     },
+    #     {"role": "user", "content": text},
     messages = [
         {
             "role": "system",
             "content": f"""
             Given a document from a user, try to extract the following metadata:
-            - source: string, one of {sources_string}
-            - url: string or don't specify
-            - created_at: string or don't specify
-            - author: string or don't specify
+            - url_array:  array of URLs from the document or don't specify
+            - topic: string or don't specify
+            - summary: string or don't specify
 
             Respond with a JSON containing the extracted metadata in key value pairs. If you don't find a metadata field, don't specify it.
             """,
@@ -29,7 +42,8 @@ def extract_metadata_from_document(text: str) -> Dict[str, str]:
     # Read environment variable - if not set - not used
     completion = get_chat_completion(
         messages,
-        "gpt-4",
+        # Originally was "gpt-4"
+        "gpt-3.5-turbo",
         os.environ.get("OPENAI_METADATA_EXTRACTIONMODEL_DEPLOYMENTID")
     )  # TODO: change to your preferred model name
 

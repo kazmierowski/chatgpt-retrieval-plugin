@@ -7,6 +7,7 @@ class Source(str, Enum):
     email = "email"
     file = "file"
     chat = "chat"
+    qa = "q_and_a"
 
 
 class DocumentMetadata(BaseModel):
@@ -15,6 +16,10 @@ class DocumentMetadata(BaseModel):
     url: Optional[str] = None
     created_at: Optional[str] = None
     author: Optional[str] = None
+    question: Optional[str] = None
+    summary: Optional[str] = None
+    topic: Optional[str] = None
+    url_array: Optional[List[str]] = None
 
 
 class DocumentChunkMetadata(DocumentMetadata):
@@ -49,6 +54,10 @@ class DocumentMetadataFilter(BaseModel):
     author: Optional[str] = None
     start_date: Optional[str] = None  # any date string format
     end_date: Optional[str] = None  # any date string format
+    question: Optional[str] = None
+    summary: Optional[str] = None
+    topic: Optional[str] = None
+    url_array: Optional[List[str]] = None
 
 
 class Query(BaseModel):
