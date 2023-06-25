@@ -30,7 +30,7 @@ def extract_metadata_from_document(text: str) -> Dict[str, str]:
             Given a document from a user, try to extract the following metadata:
             - url_array:  array of URLs from the document or don't specify
             - topic: string or don't specify
-            - summary: string or don't specify
+            - keywords: array of keywords, max 5 keywords
 
             Respond with a JSON containing the extracted metadata in key value pairs. If you don't find a metadata field, don't specify it.
             """,

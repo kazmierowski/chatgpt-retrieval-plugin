@@ -7,9 +7,14 @@ class Source(str, Enum):
     email = "email"
     file = "file"
     chat = "chat"
-    qa = "q_and_a"
+    lenses_q_a = "lenses_q_a"
+    lenses_data = "lenses_data"
 
-
+class ExtractedMetadata(BaseModel):
+    url_array: Optional[List[str]] = None
+    topic: Optional[str] = None
+    keywords: Optional[List[str]] = None
+    
 class DocumentMetadata(BaseModel):
     source: Optional[Source] = None
     source_id: Optional[str] = None
@@ -20,10 +25,16 @@ class DocumentMetadata(BaseModel):
     summary: Optional[str] = None
     topic: Optional[str] = None
     url_array: Optional[List[str]] = None
+    action: Optional[str] = None
+    origin: Optional[str] = None
+    keywords: Optional[List[str]] = None
 
 
 class DocumentChunkMetadata(DocumentMetadata):
     document_id: Optional[str] = None
+    action: Optional[str] = None
+    source: Optional[Source] = None
+    origin: Optional[str] = None
 
 
 class DocumentChunk(BaseModel):
@@ -31,6 +42,10 @@ class DocumentChunk(BaseModel):
     text: str
     metadata: DocumentChunkMetadata
     embedding: Optional[List[float]] = None
+    namespace: Optional[str] = None
+    source: Optional[Source] = None
+    action: Optional[str] = None
+    origin: Optional[str] = None
 
 
 class DocumentChunkWithScore(DocumentChunk):
@@ -58,6 +73,7 @@ class DocumentMetadataFilter(BaseModel):
     summary: Optional[str] = None
     topic: Optional[str] = None
     url_array: Optional[List[str]] = None
+    action: Optional[str] = None
 
 
 class Query(BaseModel):

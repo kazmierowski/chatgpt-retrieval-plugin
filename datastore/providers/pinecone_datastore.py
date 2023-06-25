@@ -99,7 +99,8 @@ class PineconeDataStore(DataStore):
         for batch in batches:
             try:
                 logger.info(f"Upserting batch of size {len(batch)}")
-                self.index.upsert(vectors=batch)
+                # Add namespace for the file
+                self.index.upsert(vectors=batch, namespace='contact_lenses') 
                 logger.info(f"Upserted batch successfully")
             except Exception as e:
                 logger.error(f"Error upserting batch: {e}")

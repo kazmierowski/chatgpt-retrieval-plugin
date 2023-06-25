@@ -5,7 +5,7 @@ import asyncio
 import sys
 
 from loguru import logger
-from models.models import Document, DocumentMetadata
+from models.models import Document, DocumentMetadata, ExtractedMetadata
 from datastore.datastore import DataStore
 from datastore.factory import get_datastore
 from services.extract_metadata import extract_metadata_from_document
@@ -44,11 +44,13 @@ async def process_jsonl_dump(
             created_at = item.get("created_at", datetime.utcnow().strftime('%d-%m-%Y'))
             author = item.get("author", None)
             namespace = item.get("namespace", None)
-            custom_metadata_file = json.loads(item.get("custom_metadata", None))
             question = item.get("question", None)
             summary = item.get("summary", None)
             topic = item.get("topic", None)
             url_array = item.get("url_array", None)
+            action = item.get("action", None)
+            origin = item.get("origin", None)
+            keywords = item.get("keywords", None)
 
             if not text:
                 logger.info("No document text, skipping...")
@@ -64,7 +66,10 @@ async def process_jsonl_dump(
                 question=question,
                 summary=summary,
                 topic=topic,
-                url_array=url_array
+                url_array=url_array,
+                action=action,
+                origin=origin,
+                keywords=keywords
             )
 
             # update metadata with custom values
@@ -88,9 +93,15 @@ async def process_jsonl_dump(
                     f"Text: {text}; Metadata: {str(metadata)}"
                 )
                 # get a Metadata object from the extracted metadata
-                metadata = DocumentMetadata(**extracted_metadata)
+                metadata_new = ExtractedMetadata(**extracted_metadata)
+
+                # update metadata with extracted values
+                for key, value in metadata_new:
+                    if hasattr(metadata, key):
+                        setattr(metadata, key, value)
 
             # create a document object with the id, text, metadata and namespace
+            print(metadata)
             document = Document(
                 id=id,
                 text=text,
